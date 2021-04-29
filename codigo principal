@@ -29,4 +29,7 @@ struct pago{
 int main(void){
     system("cls");
     ascii_art();
+
+    printf("Hola\n");
 }
+
