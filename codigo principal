@@ -6,30 +6,151 @@
 #include <stdlib.h>
 #include <conio.h>
 #include <windows.h>
+#include <time.h>
 #include <iostream>
 #include <D:\Docs\UPAEP\Estructura de Datos\libreriascustom\asciiart.h>
-
 using namespace std;
 
+//creacion estructura para los datos de la fecha
 struct datos_fecha{
     int dia;
     int mes;
-    int hora;
-    int minuto;
+    int year;
 };
 
+//creacion estructura datos del pago, estructura de fecha anidada
 struct pago{
     int codigo;
     char remitente[20];
     char beneficiario[20];
     struct datos_fecha fecha;
     float monto;
+    pago *siguiente;
 };
+pago *pila = NULL;
+
+//declaracion global del archivo a emplear
+FILE *archivo;
+
+void ingresarstack(); //prototipo de funciones para pilas
+void extraerstack();
 
 int main(void){
     system("cls");
+    system("color 02");
+    srand(time(NULL));
     ascii_art();
+    //presentacion
+    cout<<"\tProyecto Final"<<endl;
+    cout<<"Mau Solano\tMario Gudino\tSebas Moran"<<endl;
+    cout<<"\n\nEmpresa que procesa Pagos con Tarjeta online"<<endl;
+    cout<<"Este programa registra los datos de dichos pagos."<<endl;
+    getch();
 
-    printf("Hola\n");
+    int op; //ciclo del menu general
+    while (op != 5){
+        system("cls");
+        cout<<"MENU PRINCIPAL\n"<<endl;
+        cout<<"1)STACKS\n2)QUEUES\n3)LISTAS\n4)ARCHIVOS\n5)SALIR\n"<<endl;
+        cout<<"Seleccione una Opcion: ";
+        cin>>op;
+
+        switch (op){
+            case 1:{ //pilas
+                int op1; //ciclo de menu de pilas
+                while (op1 != 4){
+                    system("cls");
+                    cout<<"STACKS/PILAS\n"<<endl;
+                    cout<<"Seleccione: 1)ALMACENAR 2)IMPRIMIR 3)ELIMINAR 4)VOLVER"<<endl;
+                    cin>>op1;
+                    switch (op1){
+                        case 1:{
+                            system("cls");
+                            cout<<"ALMACENAR\n"<<endl;
+                            ingresarstack();
+                            break;
+                        }
+                        case 2: {
+                            system("cls");
+                            cout<<"IMPRIMIR\n"<<endl;
+                            extraerstack();
+                            getch();
+                            break;
+                        }
+                        case 3:{
+                            cout<<"ELIMINAR"<<endl;
+
+                        }
+                        case 4:{
+                            cout<<"VOLVER AL MENU PRINCIPAL"<<endl;
+                            break;
+                        }
+                        default:{
+                            cout<<"Opcion Ingresada NO valida"<<endl;
+                            break;
+                        }
+                    }
+                }
+
+
+                break;
+            }
+            case 2:{ //colas
+                system("cls");
+                break;
+            }
+            case 3:{ //listas
+                system("cls");
+                break;
+            }
+            case 4:{ //archivos
+                system("cls");
+                break;
+            }
+            case 5:{ //salir
+                system("cls");
+                cout<<"SALIR"<<endl;
+                break;
+            }
+            default:{
+                system("cls");
+                cout<<"Opcion Ingresada No valida"<<endl;
+                getch();
+                break;
+            }
+        }
+    }
+    
+}
+
+void ingresarstack(){
+    pago *nuevopago = new pago();
+    nuevopago->codigo = 1+rand()%(101-1);
+    cout<<"Ingrese Remitente del Pago: ";
+    scanf("%s", &nuevopago->remitente);
+    cout<<"Ingrese Beneficiario del Pago: ";
+    scanf("%s", &nuevopago->beneficiario);
+    cout<<"Ingrese Fecha (dia, mes, year):"<<endl;
+    cin>>nuevopago->fecha.dia;
+    cin>>nuevopago->fecha.mes;
+    cin>>nuevopago->fecha.year;
+    cout<<"Ingrese Monto: $";
+    cin>>nuevopago->monto;
+            
+    nuevopago->siguiente = pila;
+    pila = nuevopago;
+}
+
+void extraerstack(){
+    while (pila != NULL){
+        pago *aux = pila;
+        cout<<aux->codigo<<"\t";
+        cout<<aux->remitente<<"\t";
+        cout<<aux->beneficiario<<"\t";
+        cout<<aux->fecha.dia<<"/"<<aux->fecha.mes<<"/"<<aux->fecha.year<<"\t";
+        cout<<"$"<<aux->monto<<"\n";
+
+        pila = aux->siguiente;
+    }
 }
 
