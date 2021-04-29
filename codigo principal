@@ -1,0 +1,32 @@
+//proyecto Final equipo 1
+//Mau Solano  Emma Gudino  Sebas Moran
+//Empresa que procesa pagos con tarjeta online, este es un programa que registra esos pagos
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <windows.h>
+#include <iostream>
+#include <D:\Docs\UPAEP\Estructura de Datos\libreriascustom\asciiart.h>
+
+using namespace std;
+
+struct datos_fecha{
+    int dia;
+    int mes;
+    int hora;
+    int minuto;
+};
+
+struct pago{
+    int codigo;
+    char remitente[20];
+    char beneficiario[20];
+    struct datos_fecha fecha;
+    float monto;
+};
+
+int main(void){
+    system("cls");
+    ascii_art();
+}
