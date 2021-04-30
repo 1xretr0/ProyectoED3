@@ -31,9 +31,10 @@ pago *pila = NULL;
 
 //declaracion global del archivo a emplear
 FILE *archivo;
-
-void ingresarstack(); //prototipo de funciones para pilas
-void extraerstack();
+//prototipo de funciones para pilas
+void ingresarstack(); 
+void imprimirstack();
+void eliminarstack(int);
 
 int main(void){
     system("cls");
@@ -57,7 +58,9 @@ int main(void){
 
         switch (op){
             case 1:{ //pilas
-                int op1; //ciclo de menu de pilas
+                 //ciclo de menu de pilas
+                int op1 = 0;
+                int cont = 0;
                 while (op1 != 4){
                     system("cls");
                     cout<<"STACKS/PILAS\n"<<endl;
@@ -67,46 +70,67 @@ int main(void){
                         case 1:{
                             system("cls");
                             cout<<"ALMACENAR\n"<<endl;
+                            cont ++;
                             ingresarstack();
                             break;
                         }
                         case 2: {
                             system("cls");
                             cout<<"IMPRIMIR\n"<<endl;
-                            extraerstack();
+                            if (cont > 0){
+                                cont --;
+                            }
+                            imprimirstack();
                             getch();
                             break;
                         }
                         case 3:{
-                            cout<<"ELIMINAR"<<endl;
+                            system("cls");
+                            cout<<"ELIMINAR\n"<<endl;
 
+                            cout<<"Cuantos elementos dar de baja?: ";
+                            int aux;
+                            cin>>aux;
+                            if (aux <= cont){
+                                cont -= aux;
+                                eliminarstack(aux);
+                            }
+                            else{
+                                cout<<"Solo existen "<<cont<<" elementos actualmente."<<endl;
+                                getch();
+                            }
+                            break;
                         }
                         case 4:{
-                            cout<<"VOLVER AL MENU PRINCIPAL"<<endl;
+                            system("cls");
+                            //en este caso solo se cierra el ciclo de este menu y vuelve al menu general
                             break;
                         }
                         default:{
                             cout<<"Opcion Ingresada NO valida"<<endl;
+                            getch();
                             break;
                         }
                     }
                 }
-
-
                 break;
             }
             case 2:{ //colas
                 system("cls");
-                printf("HOLA\n");
+                cout<<"QUEUES\n"<<endl;
                 getch();
                 break;
             }
             case 3:{ //listas
                 system("cls");
+                cout<<"LISTAS\n"<<endl;
+                
                 break;
             }
             case 4:{ //archivos
                 system("cls");
+                cout<<"ARCHIVOS\n"<<endl;
+
                 break;
             }
             case 5:{ //salir
@@ -114,7 +138,7 @@ int main(void){
                 cout<<"SALIR"<<endl;
                 break;
             }
-            default:{
+            default:{ //caso estandar de error
                 system("cls");
                 cout<<"Opcion Ingresada No valida"<<endl;
                 getch();
@@ -125,15 +149,24 @@ int main(void){
     
 }
 
+//funcion ingreso datos a pila
 void ingresarstack(){
     pago *nuevopago = new pago();
     nuevopago->codigo = 1+rand()%(101-1);
     cout<<"Ingrese Remitente del Pago: ";
+    //un pequeno problema aqui, solo me deja ingresar un string con la funcion scanf, no funciona otra no se porque
+    //el detalle es que con scanf no se pueden ingresar strings con espacios, entonces el nombre del remitente solo se puede ingresar nombre
+    //ya que si ingresas nombre espacio apellido saldra un error que tu mismo puedes comprobar
     scanf("%s", &nuevopago->remitente);
     cout<<"Ingrese Beneficiario del Pago: ";
     scanf("%s", &nuevopago->beneficiario);
     cout<<"Ingrese Fecha (dia, mes, year):"<<endl;
+    //validacion dia del mes en proceso
     cin>>nuevopago->fecha.dia;
+    while (nuevopago->fecha.dia <= 0 || nuevopago->fecha.dia > 31){
+        cout<<"\e[A";
+        cin>>nuevopago->fecha.dia;
+    }
     cin>>nuevopago->fecha.mes;
     cin>>nuevopago->fecha.year;
     cout<<"Ingrese Monto: $";
@@ -143,7 +176,8 @@ void ingresarstack(){
     pila = nuevopago;
 }
 
-void extraerstack(){
+//funcion extraccion de datos a la pila
+void imprimirstack(){
     while (pila != NULL){
         pago *aux = pila;
         cout<<aux->codigo<<"\t";
@@ -155,3 +189,12 @@ void extraerstack(){
         pila = aux->siguiente;
     }
 }
+
+void eliminarstack(int n){
+    for(int i = 0; i < n; i++){
+        pago *auxnodo = pila;
+        pila = auxnodo->siguiente;
+        delete auxnodo;
+    }
+}
+
