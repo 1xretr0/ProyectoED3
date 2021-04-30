@@ -97,6 +97,8 @@ int main(void){
             }
             case 2:{ //colas
                 system("cls");
+                printf("HOLA\n");
+                getch();
                 break;
             }
             case 3:{ //listas
@@ -153,4 +155,3 @@ void extraerstack(){
         pila = aux->siguiente;
     }
 }
-
