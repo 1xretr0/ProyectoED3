@@ -222,7 +222,7 @@ int main(void){
                             system("cls");
                             cout<<"ELIMINAR\n"<<endl;
                             if (cont2==0){
-                            	cout<<"No se ha ingresado ningún dato en la lista"
+                            	cout<<"No se ha ingresado ningún dato en la lista";
 				}
 			    else{
 				cout<<"Ingrese el ID de la transacción que desea eliminar: ";
