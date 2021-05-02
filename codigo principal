@@ -9,6 +9,7 @@
 #include <time.h>
 #include <iostream>
 //#include <D:\Docs\UPAEP\Estructura de Datos\libreriascustom\asciiart.h>
+#define maxchar 70
 using namespace std;
 
 //creacion estructura para los datos de la fecha
@@ -21,8 +22,8 @@ struct datos_fecha{
 //creacion estructura datos del pago, estructura de fecha anidada
 struct pago{
     int codigo;
-    char remitente[20];
-    char beneficiario[20];
+    char remitente[30];
+    char beneficiario[30];
     struct datos_fecha fecha;
     float monto;
     pago *siguiente;
@@ -35,7 +36,9 @@ pago *frente=NULL;//frente a punta a Null
 pago *fin=NULL; // fin a punta a Null
 
 //creacion nodo para lista
-pago *lista = NULL;
+
+typedef struct pago *Plista;
+Plista lista= NULL;
 
 //declaracion global del archivo a emplear
 FILE *archivo;
@@ -50,13 +53,14 @@ void eliminarcola(int);
 
 //prototipos funciones listas
 void insertarlista(pago *&);
-void imprimirlista(pago *&);
-void buscarlista(pago *&, int);
-void eliminarlista(pago *&, int);
+void imprimirlista(pago *&, int c2);
+void buscarlista(pago *&);
+void eliminarlista(pago *&, int n);
 
 int main(void){
     system("cls");
     system("color 02");
+	setlocale (LC_CTYPE, "spanish");
     srand(time(NULL));
     //ascii_art();
     //presentacion
@@ -66,7 +70,7 @@ int main(void){
     cout<<"Este programa registra los datos de dichos pagos."<<endl;
     getch();
 
-    int op; //ciclo del menu general
+    int op,n; //ciclo del menu general
     while (op != 5){
         system("cls");
         cout<<"MENU PRINCIPAL\n"<<endl;
@@ -106,7 +110,7 @@ int main(void){
                             system("cls");
                             cout<<"ELIMINAR\n"<<endl;
 
-                            cout<<"Cuantos elementos dar de baja?: ";
+                            cout<<"¿Cuántos elementos desea dar de baja?: ";
                             int aux;
                             cin>>aux;
                             if (aux <= cont){
@@ -114,7 +118,7 @@ int main(void){
                                 eliminarstack(aux);
                             }
                             else{
-                                cout<<"Solo existen "<<cont<<" elementos actualmente."<<endl;
+                                cout<<"Sólo existen "<<cont<<" elementos actualmente."<<endl;
                                 getch();
                             }
                             break;
@@ -125,7 +129,7 @@ int main(void){
                             break;
                         }
                         default:{
-                            cout<<"Opcion Ingresada NO valida"<<endl;
+                            cout<<"Opción Ingresada NO válida"<<endl;
                             getch();
                             break;
                         }
@@ -163,7 +167,7 @@ int main(void){
 						case 3:{
 							system("cls");
 							cout<<"ELIMINAR\n"<<endl;
-							cout<<"Cuantos elementos dar de baja?: ";
+							cout<<"¿Cuántos elementos desea dar de baja?: ";
                             int aux1;
                             cin>>aux1;
                             if (aux1 <= cont1){
@@ -171,14 +175,14 @@ int main(void){
                                 eliminarcola(aux1);
                             }
                             else{
-                                cout<<"Solo existen "<<cont1<<" elementos actualmente."<<endl;
+                                cout<<"Sólo existen "<<cont1<<" elementos actualmente."<<endl;
                                 getch();
                             }							
 							break;
 						}
                         default:{
                             system("cls");
-                            cout<<"Opcion Ingresada NO valida"<<endl;
+                            cout<<"Opción Ingresada NO válida"<<endl;
                             break;
                         }
 					}
@@ -187,6 +191,7 @@ int main(void){
             }
             case 3:{ //listas
                 int opl = 0;
+                int cont2=0;
                 while (opl != 5){
                     system("cls");
                     cout<<"LISTAS\n"<<endl;
@@ -197,32 +202,43 @@ int main(void){
                         case 1:{
                             system("cls");
                             cout<<"ALMACENAR\n"<<endl;
+                            insertarlista(lista);
+                            cont2++;
                             break;
                         }
                         case 2:{
                             system("cls");
                             cout<<"IMPRIMIR\n"<<endl;
+                            imprimirlista(lista, cont2);
                             break;
                         }
                         case 3:{
                             system("cls");
                             cout<<"BUSCAR\n"<<endl;
+                            buscarlista(lista);
                             break;
                         }
                         case 4:{
                             system("cls");
                             cout<<"ELIMINAR\n"<<endl;
+                            if (cont2==0){
+                            	cout<<"No se ha ingresado ningún dato en la lista"
+				}
+			    else{
+				cout<<"Ingrese el ID de la transacción que desea eliminar: ";
+                            	int aux;
+                            	cin>>aux;
+                            	eliminarlista(lista,aux);
+				}
                             break;
                         }
                         default:{
                             system("cls");
-                            cout<<"Opcion Ingresada NO valida"<<endl;
+                            cout<<"Opción Ingresada NO válida"<<endl;
                             break;
                         }
                     }
                 }
-                
-                
                 break;
             }
             case 4:{ //archivos
@@ -238,7 +254,7 @@ int main(void){
             }
             default:{ //caso estandar de error
                 system("cls");
-                cout<<"Opcion Ingresada No valida"<<endl;
+                cout<<"Opción Ingresada No válida"<<endl;
                 getch();
                 break;
             }
@@ -251,13 +267,17 @@ int main(void){
 void ingresarstack(){
     pago *nuevopago = new pago();
     nuevopago->codigo = 1+rand()%(101-1);
-    cout<<"Ingrese Remitente del Pago: ";
-    //un pequeno problema aqui, solo me deja ingresar un string con la funcion scanf, no funciona otra no se porque
-    //el detalle es que con scanf no se pueden ingresar strings con espacios, entonces el nombre del remitente solo se puede ingresar nombre
-    //ya que si ingresas nombre espacio apellido saldra un error que tu mismo puedes comprobar
-    scanf("%s", &nuevopago->remitente);
-    cout<<"Ingrese Beneficiario del Pago: ";
-    scanf("%s", &nuevopago->beneficiario);
+    cin.ignore();
+	cout<<"Ingrese Remitente del Pago: ";
+      //Solucionado, sólo que se tiene que presionar enter nuevamente para continuar con el registro
+      //es como si fuera una especie de getch -Mau c:
+    cin.getline(nuevopago->remitente,maxchar);
+	//scanf("%s", &nuevopago->remitente);
+    cin.ignore();
+	cout<<"Ingrese Beneficiario del Pago: ";
+    cin.getline(nuevopago->beneficiario,maxchar);
+	cin.ignore();
+	//scanf("%s", &nuevopago->beneficiario);
     cout<<"Ingrese Fecha (dia):"<<endl;
     cin>>nuevopago->fecha.dia;
     while (nuevopago->fecha.dia <= 0 || nuevopago->fecha.dia >= 31){
@@ -286,8 +306,8 @@ void imprimirstack(){
     while (pila != NULL){
         pago *aux = pila;
         cout<<aux->codigo<<"\t";
-        cout<<aux->remitente<<"\t";
-        cout<<aux->beneficiario<<"\t";
+        cout<<aux->remitente<<"\t\t";
+        cout<<aux->beneficiario<<"\t\t";
         cout<<aux->fecha.dia<<" / "<<aux->fecha.mes<<" / "<<aux->fecha.year<<"\t";
         cout<<"$"<<aux->monto<<"\n";
 
@@ -307,11 +327,18 @@ void ingresarcola()
 {
 	pago *nuevopago = new pago();
 	nuevopago->codigo = 1+rand()%(101-1);
+    //Solucionado, sólo que se tiene que presionar enter nuevamente para continuar con el registro
+    //es como si fuera una especie de getch -Mau c:
+	cin.ignore();
 	cout<<"Ingrese Remitente del Pago: ";
-    scanf("%s", &nuevopago->remitente);
-    cout<<"Ingrese Beneficiario del Pago: ";
-    scanf("%s", &nuevopago->beneficiario);
-    cout<<"Ingrese Fecha (dia):"<<endl;
+	cin.getline(nuevopago->remitente,maxchar);
+    //scanf("%s", &nuevopago->remitente);
+    cin.ignore();
+	cout<<"Ingrese Beneficiario del Pago: ";
+    cin.getline(nuevopago->beneficiario,maxchar);
+	//scanf("%s", &nuevopago->beneficiario);
+    cin.ignore();
+	cout<<"Ingrese Fecha (dia):"<<endl;
     cin>>nuevopago->fecha.dia;
     while (nuevopago->fecha.dia <= 0 || nuevopago->fecha.dia >= 31){
         cout<<"\e[A";
@@ -373,16 +400,18 @@ void eliminarcola(int aux1)
 	}
 }
 
-void insertarlista(pago *&lista){
-    pago *nuevopago = new pago();
+void insertarlista(Plista &lista){
+    pago *nuevopago = new (pago);
     nuevopago->codigo = 1+rand()%(101-1);
+    cin.ignore();
     cout<<"Ingrese Remitente del Pago: ";
-    //un pequeno problema aqui, solo me deja ingresar un string con la funcion scanf, no funciona otra no se porque
-    //el detalle es que con scanf no se pueden ingresar strings con espacios, entonces el nombre del remitente solo se puede ingresar nombre
-    //ya que si ingresas nombre espacio apellido saldra un error que tu mismo puedes comprobar
-    scanf("%s", &nuevopago->remitente);
+    //Solucionado, sólo que se tiene que presionar enter nuevamente para continuar con el registro
+    //es como si fuera una especie de getch -Mau c:
+    cin.getline(nuevopago->remitente,maxchar);
+    cin.ignore();
     cout<<"Ingrese Beneficiario del Pago: ";
-    scanf("%s", &nuevopago->beneficiario);
+    cin.getline(nuevopago->beneficiario,maxchar);
+    cin.ignore();
     cout<<"Ingrese Fecha (dia):"<<endl;
     cin>>nuevopago->fecha.dia;
     while (nuevopago->fecha.dia <= 0 || nuevopago->fecha.dia >= 31){
@@ -401,8 +430,11 @@ void insertarlista(pago *&lista){
         cout<<"\e[A";
         cin>>nuevopago->fecha.year;
     }
-
-    pago *aux1 = lista;
+ 	cout<<"Ingrese Monto: $";
+    cin>>nuevopago->monto;
+    nuevopago->siguiente = NULL;
+    
+	pago *aux1 = lista;
     pago *aux2;
 
     while (aux1 != NULL){
@@ -419,31 +451,42 @@ void insertarlista(pago *&lista){
 
     nuevopago->siguiente = aux1;
 
-    printf("\tRegistro Ingresado Correctamente\n");
+    printf("\nRegistro Ingresado Correctamente\n");
+    getch();
 }
 
-void imprimirlista(pago *&lista){
-    pago *actual = new pago();
+void imprimirlista(Plista &actual, int c2){
+	if (actual==NULL){
+    	printf("La lista está vacía");
+	}
+	else{
+	if(c2!=0)
+	{
+	pago *actual = new pago();
     actual = lista;
-
-    while (actual != NULL){
-        cout<<actual->codigo<<"\t";
-        cout<<actual->remitente<<"\t";
+    	while (actual != NULL){
+    	cout<<actual->codigo<<"\t";
+      	cout<<actual->remitente<<"\t";
         cout<<actual->beneficiario<<"\t";
         cout<<actual->fecha.dia<<" / "<<actual->fecha.mes<<" / "<<actual->fecha.year<<"\t";
         cout<<"$"<<actual->monto<<"\n";
 
         actual = actual->siguiente;
-    }
+    	}
+	}
+	}
+    getch();
 }
 
-void buscarlista(pago *&lista, int n){
+void buscarlista(Plista &lista){
+    int codigo;
     bool x = false;
-    pago *buscar;
-
+	pago *buscar;
+	printf ("¿A quién desea buscar?\n");
+	scanf ("%d", &codigo);
     buscar = lista;
     while (buscar != NULL){
-        if (buscar->codigo == n){
+		if (buscar->codigo == codigo){
             cout<<"Registro Encontrado\n"<<endl;
             cout<<buscar->codigo<<"\t";
             cout<<buscar->remitente<<"\t";
@@ -458,10 +501,11 @@ void buscarlista(pago *&lista, int n){
     if (x != true){
         cout<<"Registro NO encontrado."<<endl;
     }
+    getch();
 }
 
-void eliminarlista(pago *&lista, int n){
-    if (lista != NULL){
+void eliminarlista(Plista &lista, int n){
+        if (lista != NULL){
         pago *auxborrar;
         pago *anterior = NULL;
         auxborrar = lista;
@@ -483,5 +527,6 @@ void eliminarlista(pago *&lista, int n){
             anterior->siguiente = auxborrar->siguiente;
             delete auxborrar;
         }
-    }
+    getch();
+}
 }
