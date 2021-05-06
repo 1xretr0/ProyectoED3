@@ -65,7 +65,7 @@ void readarchivo();
 
 int main(void){
     system("cls");
-    system("color 02");
+    system("color 0D");
 	setlocale (LC_ALL, "spanish");
     srand(time(NULL));
     //ascii_art();
@@ -74,15 +74,21 @@ int main(void){
     cout<<"Mau Solano\tMario Gudino\tSebas Moran"<<endl;
     cout<<"\n\nEmpresa que procesa Pagos con Tarjeta online"<<endl;
     cout<<"Este programa registra los datos de dichos pagos."<<endl;
+    Beep(500,300);
+    Beep(600,300);
+    Beep(700,300);
     getch();
+    system("color 02");
 
     int op,n; //ciclo del menu general
     while (op != 5){
         system("cls");
         cout<<"MENU PRINCIPAL\n"<<endl;
         cout<<"1)STACKS\n2)QUEUES\n3)LISTAS\n4)ARCHIVOS\n5)SALIR\n"<<endl;
+        Beep(500,500);
         cout<<"Seleccione una Opcion: ";
         cin>>op;
+        Beep(500,500);
 
         switch (op){
             case 1:{ //pilas
@@ -102,7 +108,7 @@ int main(void){
                             ingresarstack();
                             break;
                         }
-                        case 2: {
+                        case 2:{
                             system("cls");
                             cout<<"IMPRIMIR\n"<<endl;
                             if (cont > 0){
@@ -365,6 +371,7 @@ void ingresarstack(){
 
 //funcion extraccion de datos a la pila
 void imprimirstack(){
+	printf("CODIGO\tREMITENTE\tBENEFICIARIO\tFECHA\t\tMONTO\n\n");
     while (pila != NULL){
         pago *aux = pila;
         cout<<aux->codigo<<"\t";
@@ -437,11 +444,12 @@ void ingresarcola()
 void imprimircola()
 {
 	pago *aux = frente;
+	printf("CODIGO\tREMITENTE\tBENEFICIARIO\tFECHA\t\tMONTO\n\n");
 	while(aux!=NULL) //sacar datos de la colas
 		{
 			printf("%d\t",aux->codigo);
-			printf("%s\t",aux->remitente);
-			printf("%s\t",aux->beneficiario);
+			printf("%s\t\t",aux->remitente);
+			printf("%s\t\t",aux->beneficiario);
 			printf("%d / %d / %d\t",aux->fecha.dia,aux->fecha.mes,aux->fecha.year);
 			printf("$%.2f\n",aux->monto);
 			
@@ -523,11 +531,12 @@ void imprimirlista(Plista &actual, int c2){
 	if(c2!=0)
 	{
 	pago *actual = new pago();
+	printf("CODIGO\tREMITENTE\tBENEFICIARIO\tFECHA\t\tMONTO\n\n");
     actual = lista;
     	while (actual != NULL){
     	cout<<actual->codigo<<"\t";
-      	cout<<actual->remitente<<"\t";
-        cout<<actual->beneficiario<<"\t";
+      	cout<<actual->remitente<<"\t\t";
+        cout<<actual->beneficiario<<"\t\t";
         cout<<actual->fecha.dia<<" / "<<actual->fecha.mes<<" / "<<actual->fecha.year<<"\t";
         cout<<"$"<<actual->monto<<"\n";
 
